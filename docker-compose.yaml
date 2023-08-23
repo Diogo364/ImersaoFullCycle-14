@@ -1,0 +1,37 @@
+version: '3.9'
+
+services:
+    backend-nestjs:
+        image: nestjs
+        build:
+            context: ./backend-nest/Docker
+            dockerfile: Dockerfile-nest-dev
+            args:
+                - USERNAME=${CUSTOM_USERNAME}
+                - NODE_WORKDIR=${NODE_WORKDIR}
+                - USER_UID=${USER_UID}
+                - USER_GID=${USER_GID}
+        environment:
+            - NODE_ENV=${NODE_ENV}
+        user: "${USER_UID}:${USER_GID}"
+        ports:
+            - "3000:3000"
+        volumes:
+            - ./backend-nest:${NODE_WORKDIR}
+        entrypoint: [ "tail", "-F", "anything" ]
+
+    db:
+        image: bitnami/mongodb:5.0.17
+        ports:
+            - "27017:27017"
+        volumes:
+            - mongodb_data:/bitnami/mongodb
+        environment:
+            - MONGODB_ROOT_PASSWORD=root
+            - MONGODB_REPLICA_SET_MODE=primary
+            - MONGODB_REPLICA_SET_KEY=123456
+            - MONGODB_DATABASE=nest
+
+volumes:
+    mongodb_data:
+        driver: local
