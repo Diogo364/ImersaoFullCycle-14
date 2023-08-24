@@ -10,9 +10,11 @@ RUN apt-get update && apt-get upgrade -y
 USER ${USERNAME}
 ENV SHELL=/bin/bash
 
-WORKDIR "${NODE_WORKDIR}"
-
 COPY --chown=${USERNAME}:${USERNAME} ./nestjs "${NODE_WORKDIR}"
+
+WORKDIR "${NODE_WORKDIR}"
 
 RUN npm install
 RUN npx prisma generate
+
+CMD [ "npm", "run", "start" ]

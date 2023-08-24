@@ -1,0 +1,45 @@
+POST http://localhost:3000/routes
+Content-Type: application/json
+
+{
+    "name": "WORK ROUTE",
+    "source": {
+        "name": "Home",
+        "location": {
+            "lat": 123456,
+            "lng": 123456
+        }
+    },
+    "destination": {
+        "name": "work",
+        "location": {
+            "lat": 154578,
+            "lng": 154578
+        }
+    }
+}
+
+###
+POST http://localhost:3000/routes
+Content-Type: application/json
+
+{
+    "name": "MARKET ROUTE",
+    "source": {
+        "name": "Home",
+        "location": {
+            "lat": 123456,
+            "lng": 123456
+        }
+    },
+    "destination": {
+        "name": "market",
+        "location": {
+            "lat": 555555,
+            "lng": 666532
+        }
+    }
+}
+
+###
+GET http://localhost:3000/routes

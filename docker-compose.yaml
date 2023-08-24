@@ -5,7 +5,8 @@ services:
         image: nestjs
         build:
             context: ./backend-nest
-            dockerfile: ./Docker/Dockerfile-nest-dev
+            # dockerfile: ./Docker/Dockerfile-nest-dev
+            dockerfile: ./Docker/Dockerfile-nest
             args:
                 - USERNAME=${CUSTOM_USERNAME}
                 - NODE_WORKDIR=${NODE_WORKDIR}
@@ -16,9 +17,9 @@ services:
         user: "${USER_UID}:${USER_GID}"
         ports:
             - "3000:3000"
-        volumes:
-            - ./backend-nest:${NODE_WORKDIR}
-        entrypoint: [ "tail", "-F", "anything" ]
+        # volumes:
+        #     - ./backend-nest:${NODE_WORKDIR}
+        # entrypoint: [ "tail", "-F", "anything" ]
 
     db:
         image: bitnami/mongodb:5.0.17
