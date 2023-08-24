@@ -4,8 +4,8 @@ services:
     backend-nestjs:
         image: nestjs
         build:
-            context: ./backend-nest/Docker
-            dockerfile: Dockerfile-nest-dev
+            context: ./backend-nest
+            dockerfile: ./Docker/Dockerfile-nest-dev
             args:
                 - USERNAME=${CUSTOM_USERNAME}
                 - NODE_WORKDIR=${NODE_WORKDIR}
