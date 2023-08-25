@@ -7,7 +7,7 @@ services:
             context: ./backend-nest
             dockerfile: ./Docker/Dockerfile-nest-dev
             args:
-                - USERNAME=${CUSTOM_USERNAME}
+                - USERNAME=${NODE_CUSTOM_USERNAME}
                 - NODE_WORKDIR=${NODE_WORKDIR}
                 - USER_UID=${USER_UID}
                 - USER_GID=${USER_GID}
@@ -18,6 +18,22 @@ services:
             - "3000:3000"
         volumes:
             - ./backend-nest:${NODE_WORKDIR}
+        entrypoint: [ "tail", "-F", "anything" ]
+
+    microsservico-golang:
+        image: golang
+        build:
+            context: ./microsservico-golang
+            dockerfile: ./Docker/Dockerfile-golang-dev
+            args:
+                - USERNAME=${GOLANG_CUSTOM_USERNAME}
+                - USER_UID=${USER_UID}
+                - USER_GID=${USER_GID}
+                - GOLANG_WORKDIR=${GOLANG_WORKDIR}
+        ports:
+            - "8080:8080"
+        volumes:
+            - ./microsservico-golang
         entrypoint: [ "tail", "-F", "anything" ]
 
     db:
@@ -31,6 +47,19 @@ services:
             - MONGODB_REPLICA_SET_MODE=primary
             - MONGODB_REPLICA_SET_KEY=123456
             - MONGODB_DATABASE=nest
+
+    mysql: 
+        image: mysql:8
+        container_name: mysql
+        restart: always
+        environment:
+            - MYSQL_ROOT_PASSWORD=root
+            - MYSQL_DATABASE=routes
+        ports:
+            - "3306:3306"
+        volumes:
+            - ./.docker/mysql:/var/lib/mysql
+
 
 volumes:
     mongodb_data:
