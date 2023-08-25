@@ -19,6 +19,25 @@ services:
         volumes:
             - ./backend-nest:${NODE_WORKDIR}
         entrypoint: [ "tail", "-F", "anything" ]
+    
+    frontend-nextjs:
+        image: nextjs
+        build:
+            context: ./frontend-next
+            dockerfile: ./Docker/Dockerfile-next-dev
+            args:
+                - USERNAME=${CUSTOM_USERNAME}
+                - NODE_WORKDIR=${NODE_WORKDIR}
+                - USER_UID=${USER_UID}
+                - USER_GID=${USER_GID}
+        environment:
+            - NODE_ENV=${NODE_ENV}
+        user: "${USER_UID}:${USER_GID}"
+        ports:
+            - "8000:3000"
+        volumes:
+            - ./frontend-next:${NODE_WORKDIR}
+        entrypoint: [ "tail", "-F", "anything" ]
 
     db:
         image: bitnami/mongodb:5.0.17
