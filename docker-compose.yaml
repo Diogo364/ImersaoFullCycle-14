@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
     microsservico-golang:
-        image: golang
+        image: golang1
         build:
             context: ./microsservico-golang
             dockerfile: ./Docker/Dockerfile-golang
@@ -19,7 +19,7 @@ services:
         # entrypoint: [ "tail", "-F", "anything" ]
     
     mysql: 
-        image: mysql
+        image: mysql1
         build: 
             context: ./mysql
             dockerfile: ./Docker/Dockerfile
