@@ -17,3 +17,9 @@ USER ${USERNAME}
 ENV SHELL=/bin/bash
 
 WORKDIR "${GOLANG_WORKDIR}"
+
+COPY . .
+
+RUN go mod download
+
+CMD [ "go", "run", "cmd/routes/main.go" ]

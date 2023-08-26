@@ -1,0 +1,34 @@
+POST http://localhost:8080/api/routes
+content-type: application/json
+
+{
+    "name": "Teste",
+    "source": {
+        "lat": 23,
+        "lgn": 123
+    },
+    "destination": {
+        "lat": 123,
+        "lgn": 123
+    }
+}
+
+###
+
+POST http://localhost:8080/api/routes
+content-type: application/json
+
+{
+    "name": "Outro Teste",
+    "source": {
+        "lat": 23,
+        "lgn": 123
+    },
+    "destination": {
+        "lat": 123,
+        "lgn": 123
+    }
+}
+
+###
+GET http://localhost:8080/api/routes

@@ -1,30 +1,12 @@
 version: '3.9'
 
 services:
-    backend-nestjs:
-        image: nestjs
-        build:
-            context: ./backend-nest
-            dockerfile: ./Docker/Dockerfile-nest-dev
-            args:
-                - USERNAME=${NODE_CUSTOM_USERNAME}
-                - NODE_WORKDIR=${NODE_WORKDIR}
-                - USER_UID=${USER_UID}
-                - USER_GID=${USER_GID}
-        environment:
-            - NODE_ENV=${NODE_ENV}
-        user: "${USER_UID}:${USER_GID}"
-        ports:
-            - "3000:3000"
-        volumes:
-            - ./backend-nest:${NODE_WORKDIR}
-        entrypoint: [ "tail", "-F", "anything" ]
-
     microsservico-golang:
         image: golang
         build:
             context: ./microsservico-golang
-            dockerfile: ./Docker/Dockerfile-golang-dev
+            dockerfile: ./Docker/Dockerfile-golang
+            # dockerfile: ./Docker/Dockerfile-golang-dev
             args:
                 - USERNAME=${GOLANG_CUSTOM_USERNAME}
                 - USER_UID=${USER_UID}
@@ -33,34 +15,24 @@ services:
         ports:
             - "8080:8080"
         volumes:
-            - ./microsservico-golang
-        entrypoint: [ "tail", "-F", "anything" ]
-
-    db:
-        image: bitnami/mongodb:5.0.17
-        ports:
-            - "27017:27017"
-        volumes:
-            - mongodb_data:/bitnami/mongodb
-        environment:
-            - MONGODB_ROOT_PASSWORD=root
-            - MONGODB_REPLICA_SET_MODE=primary
-            - MONGODB_REPLICA_SET_KEY=123456
-            - MONGODB_DATABASE=nest
-
+            - ./microsservico-golang:${GOLANG_WORKDIR}
+        # entrypoint: [ "tail", "-F", "anything" ]
+    
     mysql: 
-        image: mysql:8
+        image: mysql
+        build: 
+            context: ./mysql
+            dockerfile: ./Docker/Dockerfile
+            args:
+                - MYSQL_DATABASE=routes
+                - MYSQL_ROOT_PASSWORD=root
         container_name: mysql
         restart: always
-        environment:
-            - MYSQL_ROOT_PASSWORD=root
-            - MYSQL_DATABASE=routes
         ports:
             - "3306:3306"
         volumes:
-            - ./.docker/mysql:/var/lib/mysql
-
+            - mysql_data:/var/lib/mysql
 
 volumes:
-    mongodb_data:
+    mysql_data:
         driver: local
