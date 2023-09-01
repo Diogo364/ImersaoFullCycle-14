@@ -20,12 +20,11 @@ services:
         entrypoint: [ "tail", "-F", "anything" ]
     
     frontend-nextjs:
-        image: nextjs
         build:
             context: ./frontend-next
             dockerfile: ./Docker/Dockerfile-next-dev
             args:
-                - USERNAME=${CUSTOM_USERNAME}
+                - USERNAME=${NODE_USERNAME}
                 - NODE_WORKDIR=${NODE_WORKDIR}
                 - USER_UID=${USER_UID}
                 - USER_GID=${USER_GID}
@@ -33,7 +32,7 @@ services:
             - NODE_ENV=${NODE_ENV}
         user: "${USER_UID}:${USER_GID}"
         ports:
-            - "8000:3000"
+            - "${NEXT_LOCAL_PORT}:3000"
         volumes:
             - ./frontend-next:${NODE_WORKDIR}
         entrypoint: [ "tail", "-F", "anything" ]
