@@ -2,12 +2,11 @@ version: '3.9'
 
 services:
     backend-nestjs:
-        image: nestjs
         build:
             context: ./backend-nest
             dockerfile: ./Docker/Dockerfile-nest-dev
             args:
-                - USERNAME=${CUSTOM_USERNAME}
+                - USERNAME=${NODE_USERNAME}
                 - NODE_WORKDIR=${NODE_WORKDIR}
                 - USER_UID=${USER_UID}
                 - USER_GID=${USER_GID}
@@ -15,7 +14,7 @@ services:
             - NODE_ENV=${NODE_ENV}
         user: "${USER_UID}:${USER_GID}"
         ports:
-            - "3000:3000"
+            - "${NODE_LOCAL_PORT}:3000"
         volumes:
             - ./backend-nest:${NODE_WORKDIR}
         entrypoint: [ "tail", "-F", "anything" ]
@@ -39,18 +38,47 @@ services:
             - ./frontend-next:${NODE_WORKDIR}
         entrypoint: [ "tail", "-F", "anything" ]
 
+    microsservico-golang:
+        build:
+            context: ./microsservico-golang
+            dockerfile: ./Docker/Dockerfile-golang-dev
+            args:
+                - USERNAME=${GOLANG_USERNAME}
+                - USER_UID=${USER_UID}
+                - USER_GID=${USER_GID}
+                - GOLANG_WORKDIR=${GOLANG_WORKDIR}
+        ports:
+            - "${GOLANG_LOCAL_PORT}:8080"
+        volumes:
+            - ./microsservico-golang
+        entrypoint: [ "tail", "-F", "anything" ]
+
     db:
         image: bitnami/mongodb:5.0.17
         ports:
-            - "27017:27017"
+            - "${MONGODB_LOCAL_PORT}:27017"
         volumes:
             - mongodb_data:/bitnami/mongodb
         environment:
-            - MONGODB_ROOT_PASSWORD=root
-            - MONGODB_REPLICA_SET_MODE=primary
-            - MONGODB_REPLICA_SET_KEY=123456
-            - MONGODB_DATABASE=nest
+            - MONGODB_ROOT_PASSWORD=${MONGODB_ROOT_PASSWORD}
+            - MONGODB_REPLICA_SET_MODE=${MONGODB_REPLICA_SET_MODE}
+            - MONGODB_REPLICA_SET_KEY=${MONGODB_REPLICA_SET_KEY}
+            - MONGODB_DATABASE=${MONGODB_DATABASE}
+
+    mysql: 
+        image: mysql:8
+        container_name: mysql
+        restart: always
+        environment:
+            - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+            - MYSQL_DATABASE=${MYSQL_DATABASE}
+        ports:
+            - "${MYSQL_LOCAL_PORT}:3306"
+        volumes:
+            - mysql_data:/var/lib/mysql
 
 volumes:
     mongodb_data:
+        driver: local
+    mysql_data:
         driver: local
