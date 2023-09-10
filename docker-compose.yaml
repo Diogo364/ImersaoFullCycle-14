@@ -18,6 +18,24 @@ services:
         volumes:
             - ./backend-nest:${NODE_WORKDIR}
         entrypoint: [ "tail", "-F", "anything" ]
+    
+    frontend-nextjs:
+        build:
+            context: ./frontend-next
+            dockerfile: ./Docker/Dockerfile-next-dev
+            args:
+                - USERNAME=${NODE_USERNAME}
+                - NODE_WORKDIR=${NODE_WORKDIR}
+                - USER_UID=${USER_UID}
+                - USER_GID=${USER_GID}
+        environment:
+            - NODE_ENV=${NODE_ENV}
+        user: "${USER_UID}:${USER_GID}"
+        ports:
+            - "${NEXT_LOCAL_PORT}:3000"
+        volumes:
+            - ./frontend-next:${NODE_WORKDIR}
+        entrypoint: [ "tail", "-F", "anything" ]
 
     microsservico-golang:
         build:

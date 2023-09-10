@@ -1,0 +1,17 @@
+FROM node:18
+
+ARG USERNAME=node
+ARG USER_UID=1000
+ARG USER_GID=${USER_UID}
+ARG NODE_WORKDIR=/home/${USERNAME}/app
+
+RUN apt-get update && apt-get upgrade -y
+
+RUN groupmod --gid ${USER_GID} ${USERNAME} \
+    && usermod --uid ${USER_UID} --gid ${USER_GID} ${USERNAME} \
+    && chown -R ${USER_UID}:$USER_GID /home/${USERNAME}
+
+USER ${USERNAME}
+ENV SHELL=/bin/bash
+
+WORKDIR "${NODE_WORKDIR}"
